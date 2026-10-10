@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { db } from "../lib/db.js"
 import { FALLBACK, WASTE_OPTIONS } from "../data/fallback.js"
-import { Topbar, Empty, SectionHead } from "../components/UI.jsx"
+import { Topbar, Empty, SectionHead, ExpandList } from "../components/UI.jsx"
 import { Mascot } from "../components/Mascot.jsx"
 import { Icons } from "../components/Icons.jsx"
 import { useToast } from "../components/Toast.jsx"
@@ -15,7 +15,7 @@ export default function Inno(){
   const [loading,setLoading]=useState(false)
   const [result,setResult]=useState(null)
   const [mode,setMode]=useState("offline")
-  const [history,setHistory]=useState(()=> db.getAll("inno_history").slice(-5).reverse())
+  const [history,setHistory]=useState(()=> db.getAll("inno_history").slice().reverse())
   const hasAI=!!import.meta.env.VITE_OPENROUTER_KEY
 
   async function generate(){
@@ -39,7 +39,7 @@ export default function Inno(){
         const j=await r.json()
         const txt=j.choices?.[0]?.message?.content||""
         const m=txt.match(/\{[\s\S]*\}/)
-        if(m){ const parsed=JSON.parse(m[0]); setResult(parsed); setMode("online"); db.save("inno_history",{wasteType,weightGram:Number(weight),result:parsed}); setHistory(db.getAll("inno_history").slice(-5).reverse()); addXP(15); setLoading(false); toast("Rekomendasi AI siap. +15 XP","accent"); return }
+        if(m){ const parsed=JSON.parse(m[0]); setResult(parsed); setMode("online"); db.save("inno_history",{wasteType,weightGram:Number(weight),result:parsed}); setHistory(db.getAll("inno_history").slice().reverse()); addXP(15); setLoading(false); toast("Rekomendasi AI siap. +15 XP","accent"); return }
         throw new Error("parse fail")
       }catch{ /* fallback: pakai database lokal */ }
     }
@@ -47,7 +47,7 @@ export default function Inno(){
     const fb=FALLBACK[wasteType]||FALLBACK.default
     setResult(fb); setMode("offline")
     db.save("inno_history",{wasteType,weightGram:Number(weight),result:fb})
-    setHistory(db.getAll("inno_history").slice(-5).reverse())
+    setHistory(db.getAll("inno_history").slice().reverse())
     addXP(15)
     setLoading(false)
     toast("Rekomendasi offline siap. +15 XP","accent")
@@ -124,12 +124,12 @@ export default function Inno(){
       <div className="card">
         <SectionHead title="Riwayat Lab" right={<span className="chip chip-mute">{history.length}</span>} />
         {history.length===0 ? <Empty title="Belum ada riwayat">Generate rekomendasi pertamamu di Lab ini.</Empty> :
-          <div style={{display:"grid",gap:9}}>{history.map(h=> (
-            <div key={h.id} className="panel" style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:10,padding:"12px 14px"}}>
+          <ExpandList items={history} renderItem={h=> (
+            <div className="panel" style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:10,padding:"12px 14px"}}>
               <div style={{minWidth:0}}><div style={{fontWeight:700,fontSize:13.5}}>{h.result?.nama_produk||h.wasteType}</div><div className="micro" style={{marginTop:2}}>{h.wasteType} · {h.weightGram}g · {new Date(h.timestamp||h.generatedAt).toLocaleDateString("id-ID")}</div></div>
               <span className="chip chip-leaf">{h.weightGram}g</span>
             </div>
-          ))}</div>}
+          )} />}
       </div>
     </div>
   )

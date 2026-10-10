@@ -79,6 +79,26 @@ export function Feedback({ type="info", title, children, action }){
 export function Empty({ title, children }){
   return <div className="empty">{title && <strong>{title}</strong>}{children}</div>
 }
+/* G8: riwayat ter-cap dibuka inline. Tutup = limit terbaru, buka = semua.
+   State lokal per blok; tidak ada rute atau komponen halaman baru. */
+export function ExpandList({ items, limit=5, renderItem, moreLabel="Lihat semua", lessLabel="Ciutkan" }){
+  const [open,setOpen]=useState(false)
+  const rows=Array.isArray(items)?items:[]
+  if(!rows.length) return null
+  const shown=open?rows:rows.slice(0,limit)
+  const hidden=rows.length-shown.length
+  return (
+    <div style={{display:"grid",gap:8}}>
+      {shown.map((it,i)=> <div key={it.id??i}>{renderItem(it)}</div>)}
+      {rows.length>limit && (
+        <button type="button" className="btn btn-ghost btn-sm" style={{justifySelf:"center"}} onClick={()=> setOpen(o=> !o)} aria-expanded={open}>
+          {open ? lessLabel : moreLabel+" ("+rows.length+")"}
+        </button>
+      )}
+      {!open && hidden>0 && <div className="micro" style={{textAlign:"center"}}>Menampilkan {shown.length} dari {rows.length} terbaru</div>}
+    </div>
+  )
+}
 export function XPChip({ value }){ return <span className="xp-chip"><Icons.zap width={13} height={13} /> {value} XP</span> }
 export function StreakChip({ value, hot }){ return <span className={"streak-chip"+(hot&&value>0?" hot":"")}><Icons.flame width={13} height={13} /> {value} hari</span> }
 

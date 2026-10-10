@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { db, profileStore } from "../lib/db.js"
-import { Topbar, Empty, PillStat, Progress, SectionHead, PageHead } from "../components/UI.jsx"
+import { Topbar, Empty, PillStat, Progress, SectionHead, PageHead, ExpandList } from "../components/UI.jsx"
 import { Mascot } from "../components/Mascot.jsx"
 import { Icons } from "../components/Icons.jsx"
 import { useToast } from "../components/Toast.jsx"
@@ -103,23 +103,23 @@ export default function Profile(){
           <div>
             <div className="eyebrow" style={{marginBottom:8}}>MBG Tracker</div>
             {mbg.length===0 ? <Empty title="Belum ada entri">Mulai catat satu porsi hari ini.</Empty> :
-              <div style={{display:"grid",gap:8}}>{mbg.slice(-5).reverse().map(r=> (
-                <div key={r.id} className="panel" style={{padding:"11px 14px",display:"flex",justifyContent:"space-between",gap:8,fontSize:"var(--fs-caption)"}}>
+              <ExpandList items={mbg.slice().reverse()} renderItem={r=> (
+                <div className="panel" style={{padding:"11px 14px",display:"flex",justifyContent:"space-between",gap:8,fontSize:"var(--fs-caption)"}}>
                   <span style={{fontWeight:700}}>{r.foodName}</span>
                   <span className="micro">{r.date||r.timestamp?.slice(0,10)} · {r.waste_gram}g sisa</span>
                 </div>
-              ))}</div>}
+              )} />}
           </div>
           <div className="divider" style={{margin:0}} />
           <div>
             <div className="eyebrow" style={{marginBottom:8}}>Lab Inovasi</div>
             {db.getAll("inno_history").length===0 ? <Empty title="Belum ada riwayat">Generate rekomendasi pertama di Lab.</Empty> :
-              <div style={{display:"grid",gap:8}}>{db.getAll("inno_history").slice(-5).reverse().map(h=> (
-                <div key={h.id} className="panel" style={{padding:"11px 14px",fontSize:"var(--fs-caption)"}}>
+              <ExpandList items={db.getAll("inno_history").slice().reverse()} renderItem={h=> (
+                <div className="panel" style={{padding:"11px 14px",fontSize:"var(--fs-caption)"}}>
                   <div style={{fontWeight:700}}>{h.result?.nama_produk||h.wasteType}</div>
                   <div className="micro" style={{marginTop:2}}>{h.wasteType} · {h.weightGram}g</div>
                 </div>
-              ))}</div>}
+              )} />}
           </div>
         </div>
       </div>

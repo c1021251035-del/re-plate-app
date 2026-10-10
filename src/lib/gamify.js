@@ -105,3 +105,9 @@ export function claimDailyBonus(){
   localStorage.setItem(dailyBonusKey(),"1")
   return 25
 }
+/* G8: riwayat selalu terbaru dulu; tutup = limit pertama, buka = semua.
+   slice(0,limit) setelah reverse menjaga N TERBARU, bukan N terlama. */
+export function latestFirst(rows, limit=5, open=false){
+  const rev=(Array.isArray(rows)?rows:[]).slice().reverse()
+  return open ? rev : rev.slice(0,Math.max(0,limit))
+}

@@ -5,10 +5,39 @@ import { StatCard, Progress, Empty, PageHead, SectionHead, XPChip, StreakChip, Q
 import { Mascot } from "../components/Mascot.jsx"
 import { Icons } from "../components/Icons.jsx"
 import { useToast } from "../components/Toast.jsx"
-import { getXP, getStreak, addXP, todayGoalDone, claimDailyBonus, questState, unlockedBadges, checkNewBadges, emitBadge, getMyFeedback, markFeedbackRead } from "../lib/gamify.js"
+import { getXP, getStreak, addXP, todayGoalDone, claimDailyBonus, questState, unlockedBadges, checkNewBadges, emitBadge, getMyFeedback, markFeedbackRead, latestFirst } from "../lib/gamify.js"
 import { Chart, registerables } from "chart.js"
 Chart.register(...registerables)
-
+/* G8: tabel riwayat bisa dibuka penuh. State lokal; urutan tetap terbaru dulu. */
+function HistoryTable({ rows, onRemove }){
+  const [open,setOpen]=useState(false)
+  const shown=latestFirst(rows,5,open)
+  return (
+    <div>
+      <div style={{overflowX:"auto"}}>
+        <table>
+          <thead><tr><th>Tanggal</th><th>Menu</th><th>Porsi</th><th>Sisa</th><th></th></tr></thead>
+          <tbody>
+            {shown.map(r=> (
+              <tr key={r.id}>
+                <td>{r.date||r.timestamp?.slice(0,10)}</td><td style={{fontWeight:600}}>{r.foodName}</td><td>{r.portion_gram}g</td>
+                <td><span className="chip chip-tomato">{r.waste_gram}g</span></td>
+                <td style={{textAlign:"right"}}><button type="button" className="chip chip-mute" onClick={()=> onRemove(r.id)} aria-label={"Hapus catatan "+r.foodName}>Hapus</button></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {rows.length>5 && (
+        <div style={{textAlign:"center",marginTop:10}}>
+          <button type="button" className="btn btn-ghost btn-sm" onClick={()=> setOpen(o=> !o)} aria-expanded={open}>
+            {open ? "Ciutkan" : "Lihat semua ("+rows.length+")"}
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
 export default function Dashboard({ onNav }){
   const toast=useToast()
   const [rows,setRows]=useState(()=> db.getAll("mbg_tracker"))
@@ -188,20 +217,7 @@ export default function Dashboard({ onNav }){
       <div className="card">
         <SectionHead title="Catatan terbaru" right={rows.length? <span className="chip chip-mute">{rows.length} entri</span> : null} />
         {rows.length===0 ? <Empty title="Belum ada catatan">Mulai dari satu entri hari ini — porsi dan sisanya cukup.</Empty> : (
-          <div style={{overflowX:"auto"}}>
-            <table>
-              <thead><tr><th>Tanggal</th><th>Menu</th><th>Porsi</th><th>Sisa</th><th></th></tr></thead>
-              <tbody>
-                {rows.slice(-5).reverse().map(r=> (
-                  <tr key={r.id}>
-                    <td>{r.date||r.timestamp?.slice(0,10)}</td><td style={{fontWeight:600}}>{r.foodName}</td><td>{r.portion_gram}g</td>
-                    <td><span className="chip chip-tomato">{r.waste_gram}g</span></td>
-                    <td style={{textAlign:"right"}}><button type="button" className="chip chip-mute" onClick={()=> remove(r.id)} aria-label={"Hapus catatan "+r.foodName}>Hapus</button></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <HistoryTable rows={rows} onRemove={remove} />
         )}
       </div>
     </div>
