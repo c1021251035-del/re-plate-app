@@ -4,7 +4,7 @@ import { Topbar, Empty, PillStat, Progress, SectionHead, PageHead } from "../com
 import { Mascot } from "../components/Mascot.jsx"
 import { Icons } from "../components/Icons.jsx"
 import { useToast } from "../components/Toast.jsx"
-import { getXP, getLevelMeta, getStreak, BADGES } from "../lib/gamify.js"
+import { getXP, getLevelMeta, getStreak, BADGES, foodEnjoyed } from "../lib/gamify.js"
 
 export default function Profile(){
   const toast=useToast()
@@ -15,7 +15,6 @@ export default function Profile(){
   const marketplace=db.getAll("marketplace")
   const scores=db.getAll("quiz_scores")
   const totalWaste=mbg.reduce((s,r)=> s+Number(r.waste_gram||0),0)
-  const saved=Math.round(totalWaste*0.3)
   const bestScore = scores.length ? Math.max(...scores.map(s=> s.totalQuestions? Math.round(s.score/s.totalQuestions*100):0)) : 0
   const xp=getXP(), snap=getLevelMeta(xp), streak=getStreak()
   const level=snap.level
@@ -74,7 +73,7 @@ export default function Profile(){
 
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(150px,1fr))",gap:12}}>
         <PillStat label="Limbah dicatat" value={totalWaste+" g"} tone="tomato" />
-        <PillStat label="Dihemat (30%)" value={saved+" g"} tone="leaf" />
+        <PillStat label="Porsi dinikmati" value={foodEnjoyed()+" g"} hint="Porsi dikurangi sisa" tone="leaf" />
         <PillStat label="Produk" value={marketplace.length} tone="sky" />
         <PillStat label="Skor kuis" value={bestScore} tone="carrot" />
       </div>

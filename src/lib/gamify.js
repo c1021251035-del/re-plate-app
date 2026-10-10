@@ -60,6 +60,11 @@ export function getMyFeedback(){
 export function markFeedbackRead(id){
   db.set("feedback",db.getAll("feedback").map(f=> f.id===id ? {...f,isRead:true} : f))
 }
+/* G4: "dihemat 30%" statis = fiktif. Pengganti jujur dari data nyata:
+   porsi dinikmati = jumlah (porsi - sisa) per entri. */
+export function foodEnjoyed(){
+  return db.getAll("mbg_tracker").reduce((s,r)=> s+Math.max(0,Number(r.portion_gram||0)-Number(r.waste_gram||0)),0)
+}
 
 const today=()=> new Date().toISOString().slice(0,10)
 
