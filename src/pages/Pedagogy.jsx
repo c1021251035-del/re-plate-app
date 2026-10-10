@@ -53,9 +53,11 @@ export default function Pedagogy(){
       if(v>=90){
         const cur=db.getAll("module_progress")
         if(!cur.find(x=> x.moduleId===active && x.isCompleted)){
+          const had=new Set(unlockedBadges().map(b=> b.k))
           const next=cur.filter(x=> x.moduleId!==active)
           next.push({moduleId:active,scrollPercent:v,isCompleted:true,completedAt:new Date().toISOString()})
           db.set("module_progress",next)
+          checkNewBadges(had).forEach(b=> setTimeout(()=> emitBadge(b),600))
         }
       }
     }

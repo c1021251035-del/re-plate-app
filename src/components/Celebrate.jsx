@@ -85,7 +85,7 @@ export function BadgeUnlock({ badge, onClose }){
   const I=badge.icon
   return (
     <div className="lvl-veil">
-      <div className="lvl-card" role="status">
+      <div className="lvl-card" role="dialog" aria-modal="true" aria-label={"Lencana baru: "+badge.k}>
         <Confetti count={10} />
         <div style={{width:64,height:64,margin:"0 auto",borderRadius:20,background:"var(--gold)",border:"3px solid var(--gold-2)",boxShadow:"0 4px 0 var(--gold-2)",display:"grid",placeItems:"center",color:"var(--ink)"}}><I width={30} height={30} /></div>
         <div style={{marginTop:12}}><span className="lvl-kicker"><Icons.trophy width={12} height={12} /> Lencana baru</span></div>

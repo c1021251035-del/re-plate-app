@@ -118,12 +118,13 @@ export function Quests({ onNav }){
   const qs=questState()
   const done=DAILY_QUESTS.filter(q=> qs[q.id]).length
   const all=done===DAILY_QUESTS.length
-  const bonusTaken=typeof localStorage!=="undefined" && localStorage.getItem(dailyBonusKey())==="1"
-  const canClaim=all && !bonusTaken
+  const bonusTaken0=typeof localStorage!=="undefined" && localStorage.getItem(dailyBonusKey())==="1"
+  const [taken,setTaken]=useState(bonusTaken0)
+  const canClaim=all && !taken
   const [burst,setBurst]=useState(0)
   function claim(){
     const bonus=claimDailyBonus()
-    if(bonus>0){ addXP(bonus); setBurst(b=> b+1) }
+    if(bonus>0){ addXP(bonus); setTaken(true); setBurst(b=> b+1) }
   }
   return (
     <section className="card" aria-label="Misi harian">

@@ -32,12 +32,13 @@ const ITEMS=[
 
 export function Layout({ children, current, onNav }){
   const [hud,setHud]=useState(()=> ({ xp:getXP(), meta:getLevelMeta(getXP()) }))
+  const [streak,setStreak]=useState(()=> getStreak())
   const ringRef=useRef(null)
-  const streak=getStreak()
-  /* HUD mengikuti setiap addXP: angka naik + ring memental */
+  /* HUD mengikuti setiap addXP: angka naik + ring memental + streak segar */
   useEffect(()=>{
     function onXP(e){
       setHud({ xp:e.detail.to, meta:getLevelMeta(e.detail.to) })
+      setStreak(getStreak())
       const el=ringRef.current
       if(el){ el.classList.remove("bump"); void el.offsetWidth; el.classList.add("bump") }
     }

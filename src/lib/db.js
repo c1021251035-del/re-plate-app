@@ -7,7 +7,8 @@ export const db={
   get(k,fb=null){ try{ const r=localStorage.getItem(P+k); return r?JSON.parse(r):fb }catch{ return fb } },
   exportCSV(key,filename){
     const rows=db.getAll(key); if(!rows.length) return false
-    const h=Object.keys(rows[0]); const csv=[h.join(","),...rows.map(r=>h.map(x=>JSON.stringify(r[x]??"")).join(","))].join("\n")
+    const h=Object.keys(rows[0]); const safe=v=> { const s=JSON.stringify(v??""); return /^[=+\-@]/.test(s.replace(/^"/,"")) ? "\"'"+s.slice(1) : s };
+    const csv=[h.join(","),...rows.map(r=>h.map(x=> safe(r[x])).join(","))].join("\n")
     const b=new Blob([csv],{type:"text/csv"}); const u=URL.createObjectURL(b); const a=document.createElement("a"); a.href=u; a.download=filename; a.click(); URL.revokeObjectURL(u); return true
   }
 }

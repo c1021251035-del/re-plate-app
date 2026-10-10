@@ -20,13 +20,15 @@ export const emitXP=(detail)=> emit("replate:xp",detail)
 /* XP: 10 per entri MBG, 15 per Inno, 20/12/8 per kuis, bonus misi harian.
    Level = LEVEL_XP XP per level. */
 export function addXP(amount){
-  const from = getXP()
-  const cur = from + amount
+  const gain=Number(amount)
+  if(!Number.isFinite(gain) || gain<=0) return getXP()
+  const from=getXP()
+  const cur=from+gain
   localStorage.setItem("replate_xp", String(cur))
-  emitXP({ amount, from, to:cur, leveledUp:getLevel(from)!==getLevel(cur) })
+  emitXP({ amount:gain, from, to:cur, leveledUp:getLevel(from)!==getLevel(cur) })
   return cur
 }
-export function getXP(){ return Number(localStorage.getItem("replate_xp")||"0") }
+export function getXP(){ const n=Number(localStorage.getItem("replate_xp")||"0"); return Number.isFinite(n) && n>=0 ? n : 0 }
 export function getLevel(xp){ return Math.floor(xp/LEVEL_XP)+1 }
 export function levelProgress(xp){ return xp % LEVEL_XP }
 
@@ -36,7 +38,7 @@ export const BADGES=[
   { k:"Pemula Hijau", desc:"Catat sisa MBG pertamamu", icon:"note", test:()=> db.getAll("mbg_tracker").length>0 },
   { k:"Pelajar Telaten", desc:"Selesaikan 1 modul belajar", icon:"book", test:()=> db.getAll("module_progress").some(p=> p.isCompleted) },
   { k:"Penemu Muda", desc:"Publikasikan 1 produk di Market", icon:"cube", test:()=> db.getAll("marketplace").length>0 },
-  { k:"Mahir 3R", desc:"Skor sempurna di semua kuis", icon:"trophy", test:()=> { const s=db.getAll("quiz_scores"); return s.length>=3 && s.filter(x=> x.score>=x.totalQuestions).length>=3 } },
+  { k:"Mahir 3R", desc:"Skor sempurna di semua kuis", icon:"trophy", test:()=> { const s=db.getAll("quiz_scores").filter(x=> x.score>=x.totalQuestions); return new Set(s.map(x=> x.moduleId)).size>=3 } },
 ]
 export function unlockedBadges(){
   try{ return BADGES.filter(b=> b.test()) }catch{ return [] }

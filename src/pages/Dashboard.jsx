@@ -5,7 +5,7 @@ import { StatCard, Progress, Empty, PageHead, SectionHead, XPChip, StreakChip, Q
 import { Mascot } from "../components/Mascot.jsx"
 import { Icons } from "../components/Icons.jsx"
 import { useToast } from "../components/Toast.jsx"
-import { getXP, getStreak, addXP, todayGoalDone, claimDailyBonus, questState } from "../lib/gamify.js"
+import { getXP, getStreak, addXP, todayGoalDone, claimDailyBonus, questState, unlockedBadges, checkNewBadges, emitBadge } from "../lib/gamify.js"
 import { Chart, registerables } from "chart.js"
 Chart.register(...registerables)
 
@@ -72,10 +72,12 @@ export default function Dashboard({ onNav }){
     const p=Number(portion), w=Number(waste)
     if(!p || waste==="" || isNaN(w)) return toast("Lengkapi porsi dan sisa")
     if(w>p) return toast("Sisa tidak boleh melebihi porsi","error")
+    const had=new Set(unlockedBadges().map(b=> b.k))
     db.save("mbg_tracker",{ date:todayStr, foodName:food, portion_gram:p, waste_gram:w, note:note.trim(), category: w===0?"habis": w<p/2?"sedikit":"banyak" })
     setRows(db.getAll("mbg_tracker")); setPortion(""); setWaste(""); setNote("")
     addXP(10); toast("Tercatat. +10 XP","accent")
     if(streak+1>=3) addXP(5)
+    checkNewBadges(had).forEach(b=> setTimeout(()=> emitBadge(b),900))
   }
   function remove(id){ if(!confirm("Hapus entri ini?")) return; db.del("mbg_tracker",id); setRows(db.getAll("mbg_tracker")); toast("Entri dihapus","error") }
 
