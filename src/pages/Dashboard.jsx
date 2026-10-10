@@ -1,17 +1,20 @@
 import { useState, useMemo, useEffect, useRef } from "react"
 import { db } from "../lib/db.js"
 import { MENU_OPTIONS, MODULES } from "../data/fallback.js"
-import { StatCard, Progress, Empty, PageHead, SectionHead, XPChip, StreakChip, Quests } from "../components/UI.jsx"
+import { StatCard, Progress, Empty, PageHead, SectionHead, XPChip, StreakChip, Quests, Eyebrow } from "../components/UI.jsx"
 import { Mascot } from "../components/Mascot.jsx"
 import { Icons } from "../components/Icons.jsx"
 import { useToast } from "../components/Toast.jsx"
-import { getXP, getStreak, addXP, todayGoalDone, claimDailyBonus, questState, unlockedBadges, checkNewBadges, emitBadge } from "../lib/gamify.js"
+import { getXP, getStreak, addXP, todayGoalDone, claimDailyBonus, questState, unlockedBadges, checkNewBadges, emitBadge, getMyFeedback, markFeedbackRead } from "../lib/gamify.js"
 import { Chart, registerables } from "chart.js"
 Chart.register(...registerables)
 
 export default function Dashboard({ onNav }){
   const toast=useToast()
   const [rows,setRows]=useState(()=> db.getAll("mbg_tracker"))
+  const [notes,setNotes]=useState(()=> getMyFeedback())
+  const unread=notes.filter(n=> !n.isRead).length
+  function readNote(id){ markFeedbackRead(id); setNotes(getMyFeedback()) }
   const [food,setFood]=useState(MENU_OPTIONS[0])
   const [portion,setPortion]=useState("")
   const [waste,setWaste]=useState("")
@@ -106,6 +109,34 @@ export default function Dashboard({ onNav }){
 
       {/* MISI HARIAN */}
       <Quests onNav={onNav} />
+
+      {/* PESAN GURU (G2): feedback yang selama ini hanya tampil di Ruang Kelas */}
+      {notes.length>0 && (
+        <section className="card" aria-label="Pesan dari guru">
+          <div className="between" style={{marginBottom:12}}>
+            <div>
+              <Eyebrow tone="ink"><Icons.chat width={12} height={12} style={{display:"inline",verticalAlign:"-2px",marginRight:4}} />Pesan guru</Eyebrow>
+              <h2 style={{fontSize:"var(--fs-h3)"}}>{unread>0 ? unread+" pesan baru" : "Semua pesan dibaca"}</h2>
+            </div>
+            <div className="bubble" style={{display:"inline-block"}}><Mascot mood={unread>0?"cheer":"happy"} size={52} /></div>
+          </div>
+          <div style={{display:"grid",gap:8}}>
+            {notes.slice().reverse().map(n=> (
+              <div key={n.id} className={n.isRead?"panel":"tile tile-sky"} style={{padding:"12px 14px"}}>
+                <div className="between" style={{flexWrap:"nowrap"}}>
+                  <span style={{fontWeight:800,fontSize:13}}>Dari: {n.teacherName||"Guru"}</span>
+                  {!n.isRead && <span className="chip chip-sky">Baru</span>}
+                </div>
+                <div style={{fontSize:13,marginTop:6,lineHeight:1.6}}>{n.message}</div>
+                <div className="between" style={{flexWrap:"nowrap",marginTop:8}}>
+                  <span className="micro">{new Date(n.timestamp||n.createdAt).toLocaleString("id-ID")}</span>
+                  {!n.isRead && <button type="button" className="chip chip-mute" onClick={()=> readNote(n.id)}>Tandai dibaca</button>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* INPUT MBG */}
       <div id="mbg-form" className="card">

@@ -31,5 +31,6 @@ export const Icons={
   edit:(p)=>(<svg {...S(p)}><path d="M16.5 4.5l3 3L9 18l-4 1 1-4z"/><path d="M14.5 6.5l3 3"/></svg>),
   cube:(p)=>(<svg {...S(p)}><path d="M12 3l8 4.2v9.6L12 21l-8-4.2V7.2z"/><path d="M4 7.2l8 4.2 8-4.2"/><path d="M12 11.4V21"/></svg>),
   note:(p)=>(<svg {...S(p)}><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4"/><path d="M9 12h6"/><path d="M9 16h4"/></svg>),
+  chat:(p)=>(<svg {...S(p)}><path d="M4 6a2 2 0 012-2h12a2 2 0 012 2v9a2 2 0 01-2 2H9l-5 4z"/><path d="M8.5 9.5h7"/><path d="M8.5 12.5h4"/></svg>),
   quiz:(p)=>(<svg {...S(p)}><path d="M4 5.5A2.5 2.5 0 016.5 3H20v15H6.5A2.5 2.5 0 004 20.5z"/><path d="M8.5 8.5h7"/><path d="M8.5 12h4"/><path d="M9 18v3"/></svg>),
 }

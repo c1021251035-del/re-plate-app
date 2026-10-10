@@ -17,6 +17,7 @@ function emit(name,detail){
     window.dispatchEvent(new CustomEvent(name,{detail}))
 }
 export const emitXP=(detail)=> emit("replate:xp",detail)
+export const emitBadge=(badge)=> emit("replate:badge",{...badge})
 /* XP: 10 per entri MBG, 15 per Inno, 20/12/8 per kuis, bonus misi harian.
    Level = LEVEL_XP XP per level. */
 export function addXP(amount){
@@ -48,7 +49,17 @@ export function checkNewBadges(had){
   const now=new Set(unlockedBadges().map(b=> b.k))
   return BADGES.filter(b=> now.has(b.k) && !had.has(b.k))
 }
-export const emitBadge=(badge)=> emit("replate:badge",{...badge})
+
+/* G2: feedback guru sampai ke siswa. Cocok nama case-insensitive,
+   unread dihitung dari isRead (field yang selama ini tak dibaca). */
+export function getMyFeedback(){
+  const name=(db.get("profile",null)?.name||"").trim().toLowerCase()
+  if(!name) return []
+  return db.getAll("feedback").filter(f=> (f.studentName||"").trim().toLowerCase()===name)
+}
+export function markFeedbackRead(id){
+  db.set("feedback",db.getAll("feedback").map(f=> f.id===id ? {...f,isRead:true} : f))
+}
 
 const today=()=> new Date().toISOString().slice(0,10)
 
