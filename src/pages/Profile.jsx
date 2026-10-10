@@ -36,7 +36,7 @@ export default function Profile(){
         <div className="tile tile-leaf" style={{textAlign:"center",paddingTop:26,paddingBottom:22,borderRadius:"var(--r-xl)"}}>
           <div className="bubble" style={{display:"inline-block"}}><Mascot mood="wave" size={84} /></div>
           <div style={{fontWeight:800,fontFamily:"var(--font-d)",fontSize:"var(--fs-h3)",marginTop:10}}>Halo! Senang bertemu denganmu</div>
-          <div className="caption" style={{marginTop:4}}>Isi data singkat — tersimpan lokal di perangkatmu, aman.</div>
+          <div className="caption" style={{marginTop:4}}>Isi data singkat. Tersimpan lokal di perangkatmu, aman.</div>
         </div>
         <form onSubmit={save} className="card" style={{display:"grid",gap:14}}>
           <div><label className="label" htmlFor="pf-name">Nama lengkap</label><input id="pf-name" className="input" value={form.name} onChange={e=> setForm({...form,name:e.target.value})} placeholder="Nama lengkap" /></div>

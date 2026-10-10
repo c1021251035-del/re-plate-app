@@ -103,7 +103,7 @@ export default function Pedagogy(){
                     type="button"
                     onClick={()=> !locked && selectModule(m.id)}
                     disabled={locked}
-                    aria-label={`${m.title} — ${STATE_LABEL[st]}${locked?", terkunci":""}`}
+                    aria-label={m.title+" ("+STATE_LABEL[st]+(locked?", terkunci":"")+")"}
                     aria-current={active===m.id?"step":undefined}
                     className={"node "+st}
                   >
@@ -125,7 +125,7 @@ export default function Pedagogy(){
       <div className="panel">
         <div className="between" style={{marginBottom:8,flexWrap:"nowrap"}}>
           <span className="micro" style={{fontWeight:800}}>Progres baca</span>
-          <span className="micro" style={{color: canQuiz?"var(--leaf-2)":"var(--ink-2)",fontWeight:800}}>{canQuiz ? "Kuis terbuka · +10 XP baca tuntas" : "Gulir hingga 90% — sekarang "+scrollPct+"%"}</span>
+          <span className="micro" style={{color: canQuiz?"var(--leaf-2)":"var(--ink-2)",fontWeight:800}}>{canQuiz ? "Kuis terbuka · +10 XP baca tuntas" : "Gulir hingga 90% (sekarang "+scrollPct+"%)"}</span>
         </div>
         <Progress value={scrollPct} tone={canQuiz?"leaf":"carrot"} />
       </div>

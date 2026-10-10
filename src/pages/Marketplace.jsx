@@ -38,7 +38,7 @@ export default function Marketplace(){
     <div className="fade stack-lg page-wrap">
       <PageHead
         title="Market Circular"
-        subtitle="Etalase produk olahan limbah MBG — terbit dari Lab Inovasi atau input manual."
+        subtitle="Etalase produk olahan limbah MBG, terbit dari Lab Inovasi atau input manual."
         right={<button type="button" className="btn btn-primary btn-sm" onClick={()=> setShowForm(v=>!v)}><Icons.plus width={15} height={15}/>{showForm?"Tutup":"Jual produk"}</button>}
       />
 

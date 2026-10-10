@@ -31,7 +31,7 @@ function Onboarding({ onDone }){
   const [step,setStep]=useState(0)
   const [form,setForm]=useState({name:"",class:"X",school:"",region:""})
   const slides=[
-    { title:"Sisa makanan jadi masa depan", body:"RE-PLATE mengajakmu mengubah sisa MBG jadi produk bernilai — sambil belajar ekonomi sirkular.", mood:"wave" },
+    { title:"Sisa makanan jadi masa depan", body:"RE-PLATE mengajakmu mengubah sisa MBG jadi produk bernilai, sambil belajar ekonomi sirkular.", mood:"wave" },
     { title:"Belajar sambil bermain", body:"Jalur modul, kuis, XP, dan lencana menemani progresmu. Catat satu sisa setiap hari untuk jaga streak.", mood:"cheer" },
     { title:"Siapa namamu?", body:"Lengkapi profil singkat untuk mulai petualangan ini.", mood:"happy", isForm:true },
   ]
@@ -66,7 +66,7 @@ function Onboarding({ onDone }){
         ) : (
           <div style={{display:"grid",gap:8,marginTop:18}}>
             <button type="button" className="btn btn-primary btn-block" onClick={()=> setStep(step+1)}>Lanjut <Icons.arrow width={16} height={16}/></button>
-            <button type="button" className="btn btn-ghost btn-block" onClick={()=> setStep(2)} style={{fontSize:12}}>Lewati — langsung isi profil</button>
+            <button type="button" className="btn btn-ghost btn-block" onClick={()=> setStep(2)} style={{fontSize:12}}>Lewati, langsung isi profil</button>
           </div>
         )}
         <div style={{display:"flex",gap:6,justifyContent:"center",marginTop:16}}>

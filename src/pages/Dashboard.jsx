@@ -85,7 +85,7 @@ export default function Dashboard({ onNav }){
     <div className="fade stack-lg page-wrap">
       <PageHead
         title={"Halo, "+(db.get("profile")?.name || "Pelajar")}
-        subtitle={doneToday ? "Misi harian selesai. Lanjutkan belajar atau pantau progresmu." : "Misi hari ini: catat satu porsi MBG — butuh 30 detik."}
+        subtitle={doneToday ? "Misi harian selesai. Lanjutkan belajar atau pantau progresmu." : "Misi hari ini: catat satu porsi MBG (butuh 30 detik)."}
         right={<div className="row-tight"><XPChip value={xp} /><StreakChip value={streak} /></div>}
       />
 
@@ -113,7 +113,7 @@ export default function Dashboard({ onNav }){
           <div><span className="eyebrow">Input harian</span><h2>Catat MBG Hari Ini</h2></div>
           {doneToday ? <span className="chip chip-leaf"><Icons.check width={12} height={12} /> Selesai</span> : <span className="chip chip-carrot">+10 XP</span>}
         </div>
-        <p className="caption" style={{marginBottom:16}}>Porsi yang diterima dan sisa makanan. Catat jujur — data membantu mengurangi limbah besok.</p>
+        <p className="caption" style={{marginBottom:16}}>Porsi yang diterima dan sisa makanan. Catat jujur, data membantu mengurangi limbah besok.</p>
         <form onSubmit={submit} style={{display:"grid",gap:14}}>
           <div>
             <label className="label" htmlFor="f-food">Menu hari ini</label>
@@ -144,7 +144,7 @@ export default function Dashboard({ onNav }){
       <div className="card">
         <span className="eyebrow">Analisis</span>
         <h2>Tren 7 Hari</h2>
-        <p className="caption" style={{marginTop:4,marginBottom:14}}>Porsi vs sisa — lihat pola makannya selama seminggu.</p>
+        <p className="caption" style={{marginTop:4,marginBottom:14}}>Porsi vs sisa. Lihat pola makannya selama seminggu.</p>
         <div style={{height:200}}><canvas ref={canvasRef} aria-label="Grafik batang tren porsi dan sisa 7 hari terakhir" role="img" /></div>
         <table className="sr-only">
           <caption>Data tren 7 hari</caption>
